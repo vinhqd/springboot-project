@@ -1,0 +1,240 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/admin-layout :: admin-fragment(
+                                                ~{::title},
+                                                ~{:: #header-static-resource},
+                                                ~{:: #header},
+                                                ~{:: #sidebar},
+                                                ~{:: #content},
+                                                ~{:: #footer},
+                                                ~{:: #control-sidebar},
+                                                ~{:: #footer-scripts}
+                                               )}">
+<head>
+    <title>Thể loại</title>
+    <th:block id="home-static-resources">
+        <!-- DataTables -->
+        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+    </th:block>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav id="header" th:replace="~{/fragment/admin-fragments :: header}">
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside id="sidebar" th:replace="~{/fragment/admin-fragments :: sidebar}">
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div id="content" class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Thể loại</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+<!--                            <li class="breadcrumb-item"><a th:href="@{/admin}">Danh sách thể loại</a></li>-->
+                            <li class="breadcrumb-item">Danh sách thể loại</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-right" style="margin-bottom: 8px">
+                            <a th:href="@{/admin/category/add}" class="btn btn-outline-primary">
+                                <i class="fas fa-plus-circle"></i>
+                            </a>
+                            <button id="btnDelete" class="btn btn-outline-danger">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">DataTable with default features</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="example" class="display table table-bordered table-striped" cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>
+                                        <th>Tên thể loại</th>
+                                        <th>#</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th>Tên thể loại</th>
+                                        <th>#</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer id="footer" th:replace="~{/fragment/admin-fragments :: footer}">
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside id="control-sidebar" th:replace="~{/fragment/admin-fragments :: control-sidebar}">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+
+<th:block id="footer-scripts">
+    <!-- DataTables  & Plugins -->
+    <script th:src="@{/admin/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+    <script th:src="@{/admin/plugins/jszip/jszip.min.js}"></script>
+    <script th:src="@{/admin/plugins/pdfmake/pdfmake.min.js}"></script>
+    <script th:src="@{/admin/plugins/pdfmake/vfs_fonts.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- Page specific script -->
+    <script>
+        let data = JSON.parse("[[${categories}]]".replace(/&quot;/g, '"'));
+        $("#category").addClass("menu-open");
+        $(document).ready(function() {
+            var table = $('#example').DataTable({
+                data: data,
+                columns: [
+                    {"": "???"},
+                    {data: "name"},
+                    {"": "???"},
+                ],
+                "oLanguage": {
+                    "sZeroRecords": "Không tìm thấy.",
+                    "sLengthMenu": "Hiển thị _MENU_ thể loại",
+                    "sSearch": "Tìm kiếm: "
+                },
+                "language": {
+                    "info": "Hiển thị _START_ đến _END_ trong _TOTAL_ thể loại",
+                    "infoEmpty":      "Hiển thị 0 đến 0 trong 0 thể loại",
+                    "infoFiltered":   "(Tìm kiếm trong _MAX_ thể loại)",
+                    "emptyTable":     "Không có thể loại nào",
+                },
+                "lengthMenu": [2, 5, 10, 25, 50],
+                'columnDefs': [{
+                    'targets': 0,
+                    'searchable':false,
+                    'orderable':false,
+                    "data": data.id,
+                    'className': 'dt-body-center',
+                    'render': function (data, type, full, meta){
+                        return '<input type="checkbox" name=id[] value="'
+                            + $('<div/>').text(full.id).html() + '">';}
+                    },
+                    {
+                        "targets": 2,
+                        "data": data,
+                        'searchable':false,
+                        'orderable':false,
+                        "defaultContent": "<button class='btn btn-outline-info'>Edit</button>"
+                    }
+                ],
+                'order': [1, 'asc']
+            });
+
+            // Handle click on "Select all" control
+            $('#example-select-all').on('click', function(){
+                // Check/uncheck all checkboxes in the table
+                var rows = table.rows({ 'page': 'applied' }).nodes();
+                $('input[type="checkbox"]', rows).prop('checked', this.checked);
+            });
+
+            // Handle click on checkbox to set state of "Select all" control
+            $('#example tbody').on('change', 'input[type="checkbox"]', function(){
+                // If checkbox is not checked
+                if(!this.checked){
+                    var el = $('#example-select-all').get(0);
+                    // If "Select all" control is checked and has 'indeterminate' property
+                    if(el && el.checked && ('indeterminate' in el)){
+                        // Set visual state of "Select all" control
+                        // as 'indeterminate'
+                        el.indeterminate = true;
+                    }
+                }
+            });
+
+            $('#btnDelete').on('click', function(e) {
+                let ids = [];
+                // Iterate over all checkboxes in the table
+                table.$('input[type="checkbox"]').each(function () {
+                        if (this.checked) {
+                            // Create a hidden element
+                            ids.push(this.value);
+                        }
+                });
+                if (ids.length > 0) {
+                    swal({
+                        title: "Bạn có muốn xoá?",
+                        text: "Xoá, dữ liêu sẽ không còn.",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                swal("Xoá thành công!", {
+                                    icon: "success",
+                                }).then((willSuccess) => {
+                                    if (willSuccess) {
+                                        window.location.href = "/admin/category/delete?ids=" + ids;
+                                    }
+                                });
+                            } else {
+                                swal("Huỷ thành công!");
+                            }
+                        });
+                } else {
+                    swal("Chưa chọn thể loại để xoá!")
+                }
+            });
+
+            $('#example tbody').on( 'click', 'button', function () {
+                let data = table.row($(this).parents('tr')).data();
+                window.location.href = "/admin/category/add?id=" + data.id;
+            } );
+
+        });
+
+    </script>
+</th:block>
+</body>
+</html>

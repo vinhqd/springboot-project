@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/web-layout :: web-fragment(
+                                                ~{::title},
+                                                ~{:: #header-static-resource},
+                                                ~{:: #header-area},
+                                                ~{:: #site-branding-area},
+                                                ~{:: #mainmenu-area},
+                                                ~{:: #main-content},
+                                                ~{:: #footer-top-area},
+                                                ~{:: #footer-bottom-area}
+                                               )}">
+<head>
+    <title>Trang chủ</title>
+    <th:block id="home-static-resources">
+
+    </th:block>
+</head>
+<body>
+
+<div id="header-area" th:replace="~{/fragment/web-fragments :: header-area}">
+
+</div>
+
+<div id="site-branding-area" th:replace="~{/fragment/web-fragments :: site-branding-area}">
+
+</div> <!-- End site branding area -->
+
+<div id="mainmenu-area" th:replace="~{/fragment/web-fragments :: mainmenu-area}">
+
+</div> <!-- End mainmenu area -->
+
+<div id="main-content">
+
+</div>
+
+<div id="footer-top-area" th:replace="~{/fragment/web-fragments :: footer-top-area}">
+
+</div> <!-- End mainmenu area -->
+
+<div id="footer-bottom-area" th:replace="~{/fragment/web-fragments :: footer-bottom-area}">
+
+</div> <!-- End mainmenu area -->
+
+</body>
+</html>

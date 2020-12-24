@@ -1,0 +1,53 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/admin-layout :: admin-fragment(
+                                                ~{::title},
+                                                ~{:: #header-static-resource},
+                                                ~{:: #header},
+                                                ~{:: #sidebar},
+                                                ~{:: #content},
+                                                ~{:: #footer},
+                                                ~{:: #control-sidebar},
+                                                ~{:: #footer-scripts}
+                                               )}">
+<head>
+    <title>Admin</title>
+    <th:block id="home-static-resources">
+
+    </th:block>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav id="header" th:replace="~{/fragment/admin-fragments :: header}">
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside id="sidebar" th:replace="~{/fragment/admin-fragments :: sidebar}">
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div id="content" class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <!-- /.content-header -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer id="footer" th:replace="~{/fragment/admin-fragments :: footer}">
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside id="control-sidebar" th:replace="~{/fragment/admin-fragments :: control-sidebar}">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+
+<th:block id="footer-scripts">
+
+</th:block>
+
+</body>
+</html>
