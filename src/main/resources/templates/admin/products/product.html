@@ -69,12 +69,24 @@
                                 <h3 class="card-title">Danh sách sản phẩm</h3>
                             </div>
                             <!-- /.card-header -->
+
                             <div class="card-body">
 
-                                <table class="table table-bordered table-striped">
+                                <select id="limit" class="custom-select" style="margin-bottom: 16px; max-width: 100px">
+                                    <option value="2">2</option>
+                                    <option value="5">5</option>
+                                    <option selected value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="all">All</option>
+                                </select>
+
+                                <table id="table" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
-                                        <th scope="col">#</th>
+                                        <th scope="col">
+                                            <input id="select-all" type="checkbox">
+                                        </th>
                                         <th scope="col">Tên sản phẩm</th>
                                         <th scope="col">Tển thể loại</th>
                                         <th scope="col">Tên nhãn hiệu</th>
@@ -82,18 +94,22 @@
                                         <th>#</th>
                                     </tr>
                                     </thead>
-                                    <tbody th:each="product: ${products}">
+                                    <tbody th:each="product: ${model.results}">
                                         <tr th:object="${product}">
-                                            <td></td>
+                                            <td>
+                                                <input type="checkbox" th:value="*{id}">
+                                            </td>
                                             <td th:text="*{name}"></td>
                                             <td th:text="*{categoryName}"></td>
-                                            <td th:text="*{categoryCode}"></td>
+                                            <td th:text="*{brandName}"></td>
                                             <td th:text="*{quantity}"></td>
-                                            <td></td>
+                                            <td>
+                                                <button id="btnEdit" th:data-id="*{id}" class="btn btn-outline-info">Edit</button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
-
+                                <ul id="pagination" class="pagination-lg" style="margin-top: 16px"></ul>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -120,29 +136,71 @@
 </div>
 
 <th:block id="footer-scripts">
-    <!-- DataTables  & Plugins -->
-    <script th:src="@{/admin/plugins/datatables/jquery.dataTables.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
-    <script th:src="@{/admin/plugins/jszip/jszip.min.js}"></script>
-    <script th:src="@{/admin/plugins/pdfmake/pdfmake.min.js}"></script>
-    <script th:src="@{/admin/plugins/pdfmake/vfs_fonts.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
-    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+    <!--  twbsPagination  -->
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script th:src="@{/pagination/jquery.twbsPagination.js}"></script>
+
+    <!--  Sweet alert  -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- Page specific script -->
     <script>
         $("#product").addClass("menu-open");
         $(document).ready(function() {
+            var $pagination = $('#pagination');
+            let totalPage = [[${model.totalPage}]];
+
+            $pagination.twbsPagination({
+                totalPages: totalPage,
+                visiblePages: 5,
+                startPage: [[${model.currentPage}]],
+                onPageClick: function (e, currentPage) {
+
+                    let url = `${window.location.href}?page=${currentPage}&limit=${[[${model.limit}]]}`;
+                    $.ajax({
+                        url: url,
+                        dataType : "html",
+                        success: function (data){
+                            $('#table').html($('#table',data).html());
+                            // similar to $(data).find('#showresults')
+                        }
+                    })
+                }
+            });
+
+            $("#limit").change(function () {
+                let limit = $(this).val();
+                let url = `${window.location.href}?page=${[[${model.currentPage}]]}&limit=${limit}`;
+                totalPage = Math.ceil([[${model.totalItem}]] / limit)
+                $.ajax({
+                    url: url,
+                    dataType : "html",
+                    success: function (data){
+                        $('#table').html($('#table',data).html());
+                        $pagination.twbsPagination("destroy");
+                        $pagination.twbsPagination({
+                            totalPages: totalPage,
+                            visiblePages: 5,
+                            startPage: [[${model.currentPage}]],
+                            onPageClick: function (e, currentPage) {
+                                url = `${window.location.href}?page=${currentPage}&limit=${limit}`;
+                                $.ajax({
+                                    url: url,
+                                    dataType : "html",
+                                    success: function (data){
+                                        $('#table').html($('#table',data).html());
+                                        // similar to $(data).find('#showresults')
+                                    }
+                                })
+                            }
+                        });
+                    }
+                });
+            });
 
             $('#btnDelete').on('click', function(e) {
                 let ids = [];
                 // Iterate over all checkboxes in the table
-                table.$('input[type="checkbox"]').each(function () {
+                $('#table input[type="checkbox"]').each(function () {
                     if (this.checked) {
                         // Create a hidden element
                         ids.push(this.value);
@@ -174,10 +232,27 @@
                 }
             });
 
-            $('#example tbody').on( 'click', 'button', function () {
-                let data = table.row($(this).parents('tr')).data();
-                window.location.href = "/admin/category/add?id=" + data.id;
+            $('#table').on( 'click', "#btnEdit", function (e) {
+                window.location.href = "/admin/product/add?id=" + $(this).data("id");
             } );
+
+            $('#table').on("click", "#select-all", function (){
+                if(this.checked) {
+                    $('#table tbody input[type="checkbox"]').each(function (index, e) {
+                        if (!e.checked) {
+                            // Create a hidden element
+                            e.checked(true);
+                        }
+                    });
+                } else {
+                    $('#table tbody input[type="checkbox"]').each(function (index, e) {
+                        if (e.checked) {
+                            // Create a hidden element
+                            e.checked(false);
+                        }
+                    });
+                }
+            });
 
         });
 
