@@ -43,14 +43,19 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{/admin/product}">Danh sách sản phẩm</a></li>
-                            <li th:if="${product.id == null}" class="breadcrumb-item">Thêm mới sản phẩm</li>
-                            <li th:if="${product.id != null}" class="breadcrumb-item">Sửa sản phẩm</li>
+                            <li class="breadcrumb-item">Trang chi tiết</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
+        <div id="alertSuccess" th:if="${message != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:utext="${message}"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
 
         <!-- Main content -->
         <section class="content">
@@ -59,62 +64,25 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 th:if="${product.id == null}" class="card-title">Thêm mới sản phẩm</h3>
-                                <h3 th:if="${product.id != null}" class="card-title">Sửa sản phẩm</h3>
+                                <h3 class="card-title">Chi tiết sản phẩm</h3>
                             </div>
-                            <div class="card-body">
-                                <form th:object="${product}" th:action="@{/admin/product/add}" enctype="multipart/form-data" method="POST">
-                                    <div class="form-group col-4">
-                                        <label for="brand">Thương hiệu: </label>
-                                        <select id="brand" class="form-control" th:field="*{brandCode}">
-                                            <option value="" selected disabled >Lựa chọn thương hiệu</option>
-
-                                            <th:block th:each="item: ${brands}" >
-                                                <option th:value="${item.code}" th:text="${item.name}"></option>
-                                            </th:block>
-
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group col-4">
-                                        <label for="category">Thể loại: </label>
-                                        <select id="category" class="form-control" th:field="*{categoryCode}">
-                                            <option value="" selected disabled>Lựa chọn thể loại</option>
-
-                                            <th:block th:each="item: ${categories}" >
-                                                <option th:value="${item.code}" th:text="${item.name}"></option>
-                                            </th:block>
-
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="name">Tên sản phẩm: </label>
-                                        <input class="form-control" id="name" placeholder="Tên sản phẩm" th:field="*{name}">
-                                    </div>
-                                    <div class="form-group col-2">
-                                        <label for="price">Giá: </label>
-                                        <input class="form-control" id="price" placeholder="Miêu tả ngắn" th:field="*{price}">
-                                    </div>
-                                    <div class="form-group col-2">
-                                        <label for="quantity">Số lượng</label>
-                                        <input type="text" class="form-control" id="quantity" placeholder="Số lượng" th:field="*{quantity}">
-                                    </div>
-                                    <div class="form-group col-6">
-                                        <div class="form-group">
-                                            <label for="thumbnail">Thumbnail</label>
-                                            <input type="file" class="form-control-file" id="thumbnail" th:field="*{multipartFile}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Miêu tả sản phẩm</label>
-                                        <textarea th:field="*{description}" class="form-control" id="exampleFormControlTextarea1" rows="6" style="resize: none"></textarea>
-                                    </div>
-                                    <button th:if="*{id == null}" type="submit" class="btn btn-primary">Thêm mới</button>
-                                    <button th:if="*{id != null}" type="submit" class="btn btn-primary">Sửa</button>
-                                    <input type="hidden" th:field="*{id}">
-                                    <input type="hidden" th:field="*{thumbnail}">
-                                </form>
+                            <div class="card-body" th:object="${product}">
+                                <img th:if="*{thumbnail == null || thumbnail == ''}" class="card-img-right w-25" th:src="@{/images/default-product-img.jpg}" alt="Thumbnail">
+                                <img th:if="*{thumbnail != null && thumbnail != ''}" class="card-img-right w-25" th:src="*{thumbnail}" alt="Thumbnail">
+                                <div class="card-body">
+                                    <h3 class="card-title" th:text="*{name}"></h3>
+                                    <p class="card-text">
+                                        <span>Số lượng: </span>
+                                        <span th:utext="*{quantity}" ></span>
+                                    </p>
+                                    <p class="card-text">
+                                        <span>Giá: </span>
+                                        <span th:utext="*{price}" ></span>
+                                    </p>
+                                    Miêu tả: <p class="card-text" th:text="*{description}"></p>
+                                    <a th:href="@{/admin/product}" class="btn btn-primary">Danh sách sản phẩm</a>
+                                    <button id="btnEdit" class="btn btn-info">Sửa</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -157,9 +125,14 @@
         $("#product").addClass("menu-open");
         $(document).ready(function() {
 
-            $("#brand select").change(function () {
-                [[${product.brandCode}]] = this.val();
+            $("#btnEdit").on("click", function () {
+                // let url = ;
+                window.location.href = `/admin/product/add?id=${[[${product.id}]]}`;
             });
+
+            setTimeout(function(){
+                $('#alertSuccess').hide();
+                }, 2000);
         });
     </script>
 </th:block>

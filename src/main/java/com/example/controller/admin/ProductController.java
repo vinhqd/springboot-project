@@ -57,13 +57,23 @@ public class ProductController {
     public String addProduct(ProductDTO productDTO) {
         ProductDTO dto = productService.save(productDTO);
         if (dto == null) return "redirect:/admin/product/add?errorSystem";
-        return "redirect:/admin/product?success";
+        return "redirect:/admin/product/detail?success&id=" + dto.getId();
     }
 
     @GetMapping("/delete")
     public String deleteProduct(@RequestParam long[] ids) {
         productService.delete(ids);
         return "redirect:/admin/product?success";
+    }
+
+    @GetMapping("/detail")
+    public String detailPage(Model model, @RequestParam(required = false) long id, @RequestParam(required = false) String success){
+        ProductDTO product = productService.findOneById(id);
+        if (success != null) {
+            model.addAttribute("message", "Thành công");
+        }
+        model.addAttribute("product", product);
+        return "admin/products/detail";
     }
 
 }

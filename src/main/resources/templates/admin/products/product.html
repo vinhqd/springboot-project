@@ -244,6 +244,10 @@
                 window.location.href = "/admin/product/add?id=" + $(this).data("id");
             } );
 
+            $('#table').on( 'click', "#btnDetail", function (e) {
+                window.location.href = "/admin/product/detail?id=" + $(this).data("id");
+            } );
+
             $('#table').on("click", "#select-all", function (){
                 if(this.checked) {
                     $('#table tbody input[type="checkbox"]').each(function (index, e) {
