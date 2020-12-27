@@ -1,21 +1,20 @@
 package com.example.controller.admin;
 
-import com.example.dto.AbstractDTO;
 import com.example.dto.ProductDTO;
+import com.example.service.IBrandService;
+import com.example.service.ICategoryService;
 import com.example.service.IProductService;
 import com.example.utils.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.MatrixVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -24,6 +23,12 @@ public class ProductController {
 
     @Autowired
     private IProductService productService;
+
+    @Autowired
+    private IBrandService brandService;
+
+    @Autowired
+    private ICategoryService categoryService;
 
     @GetMapping
     public String productPage(Model model, @RequestParam(required = false) Map<String, String> params) {
@@ -35,9 +40,26 @@ public class ProductController {
     }
 
     @GetMapping("/add")
-    public String addProductPage(@RequestParam(required = false) Integer id, Model model) {
-
+    public String addProductPage(@RequestParam(required = false) Long id, Model model) {
+        ProductDTO product = new ProductDTO();
+        if (id != null) product = productService.findOneById(id);
+        model.addAttribute("brands", brandService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("product", product);
         return "/admin/products/add";
+    }
+
+    @PostMapping("/add")
+    public String addProduct(ProductDTO productDTO) {
+        ProductDTO dto = productService.save(productDTO);
+        if (dto == null) return "redirect:/admin/product/add?errorSystem";
+        return "redirect:/admin/product?success";
+    }
+
+    @GetMapping("/delete")
+    public String deleteProduct(@RequestParam long[] ids) {
+        productService.delete(ids);
+        return "redirect:/admin/product?success";
     }
 
 }

@@ -9,17 +9,21 @@ public class ProductEntity extends BaseEntity {
     @Column
     private String name;
 
+    @Column(name = "nameunsigned")
+    private String nameUnsigned;
+
     @Column
     private double price;
-
-    @Column(name = "shortdescription")
-    private String shortDescription;
 
     @Column(name = "thumbnail")
     private String thumbnail;
 
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "descriptionunsigned", columnDefinition = "TEXT")
+    private String descriptionUnsigned;
 
     @Column
     private int quantity;
@@ -46,14 +50,6 @@ public class ProductEntity extends BaseEntity {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
     }
 
     public String getThumbnail() {

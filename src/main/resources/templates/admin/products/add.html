@@ -1,0 +1,166 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/admin-layout :: admin-fragment(
+                                                ~{::title},
+                                                ~{:: #header-static-resource},
+                                                ~{:: #header},
+                                                ~{:: #sidebar},
+                                                ~{:: #content},
+                                                ~{:: #footer},
+                                                ~{:: #control-sidebar},
+                                                ~{:: #footer-scripts}
+                                               )}">
+<head>
+    <title>Sản phẩm</title>
+    <th:block id="home-static-resources">
+        <!-- DataTables -->
+        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+    </th:block>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav id="header" th:replace="~{/fragment/admin-fragments :: header}">
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside id="sidebar" th:replace="~{/fragment/admin-fragments :: sidebar}">
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div id="content" class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Sản phẩm</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{/admin/product}">Danh sách sản phẩm</a></li>
+                            <li th:if="${product.id == null}" class="breadcrumb-item">Thêm mới sản phẩm</li>
+                            <li th:if="${product.id != null}" class="breadcrumb-item">Sửa sản phẩm</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 th:if="${product.id == null}" class="card-title">Thêm mới sản phẩm</h3>
+                                <h3 th:if="${product.id != null}" class="card-title">Sửa sản phẩm</h3>
+                            </div>
+                            <div class="card-body">
+                                <form th:object="${product}" th:action="@{/admin/product/add}" enctype="multipart/form-data" method="POST">
+                                    <div class="form-group col-4">
+                                        <label for="brand">Thương hiệu: </label>
+                                        <select id="brand" class="form-control" th:field="*{brandCode}">
+                                            <option value="" selected disabled >Lựa chọn thương hiệu</option>
+
+                                            <th:block th:each="item: ${brands}" >
+                                                <option th:value="${item.code}" th:text="${item.name}"></option>
+                                            </th:block>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-4">
+                                        <label for="category">Thể loại: </label>
+                                        <select id="category" class="form-control" th:field="*{categoryCode}">
+                                            <option value="" selected disabled>Lựa chọn thể loại</option>
+
+                                            <th:block th:each="item: ${categories}" >
+                                                <option th:value="${item.code}" th:text="${item.name}"></option>
+                                            </th:block>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="name">Tên sản phẩm: </label>
+                                        <input class="form-control" id="name" placeholder="Tên sản phẩm" th:field="*{name}">
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label for="price">Giá: </label>
+                                        <input class="form-control" id="price" placeholder="Miêu tả ngắn" th:field="*{price}">
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label for="quantity">Số lượng</label>
+                                        <input type="text" class="form-control" id="quantity" placeholder="Số lượng" th:field="*{quantity}">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <div class="form-group">
+                                            <label for="thumbnail">Thumbnail</label>
+                                            <input type="file" class="form-control-file" id="thumbnail" th:field="*{multipartFile}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Miêu tả sản phẩm</label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" style="resize: none"></textarea>
+                                    </div>
+                                    <button th:if="*{id == null}" type="submit" class="btn btn-primary">Thêm mới</button>
+                                    <button th:if="*{id != null}" type="submit" class="btn btn-primary">Sửa</button>
+                                    <input type="hidden" th:field="*{id}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer id="footer" th:replace="~{/fragment/admin-fragments :: footer}">
+    </footer>
+
+    <!-- Control Sidebar -->
+    <aside id="control-sidebar" th:replace="~{/fragment/admin-fragments :: control-sidebar}">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+
+<th:block id="footer-scripts">
+    <!-- DataTables  & Plugins -->
+    <script th:src="@{/admin/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+    <script th:src="@{/admin/plugins/jszip/jszip.min.js}"></script>
+    <script th:src="@{/admin/plugins/pdfmake/pdfmake.min.js}"></script>
+    <script th:src="@{/admin/plugins/pdfmake/vfs_fonts.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+    <script th:src="@{/admin/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+    <!-- Page specific script -->
+    <script>
+        $("#product").addClass("menu-open");
+        $(document).ready(function() {
+
+            $("#brand select").change(function () {
+                [[${product.brandCode}]] = this.val();
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

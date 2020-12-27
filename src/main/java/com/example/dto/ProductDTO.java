@@ -1,17 +1,27 @@
 package com.example.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ProductDTO extends AbstractDTO<ProductDTO> {
 
     private String name;
     private double price;
     private String thumbnail;
-    private String shortDescription;
     private String description;
     private int quantity;
     private String categoryCode;
     private String brandCode;
     private String categoryName;
     private String brandName;
+    private MultipartFile multipartFile;
+
+    public MultipartFile getMultipartFile() {
+        return multipartFile;
+    }
+
+    public void setMultipartFile(MultipartFile multipartFile) {
+        this.multipartFile = multipartFile;
+    }
 
     public String getName() {
         return name;
@@ -35,14 +45,6 @@ public class ProductDTO extends AbstractDTO<ProductDTO> {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
     }
 
     public String getDescription() {
@@ -92,4 +94,6 @@ public class ProductDTO extends AbstractDTO<ProductDTO> {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+
 }

@@ -11,4 +11,10 @@ public interface IProductService {
 
     long count();
 
+    ProductDTO findOneById(long id);
+
+    ProductDTO save(ProductDTO productDTO);
+
+    void delete(long[] ids);
+
 }

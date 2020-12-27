@@ -14,6 +14,9 @@ public class BrandEntity extends BaseEntity {
     @Column
     private String name;
 
+    @Column(name = "nameunsigned")
+    private String nameUnsigned;
+
     @Column
     private String code;
 
@@ -42,5 +45,13 @@ public class BrandEntity extends BaseEntity {
 
     public void setProducts(List<ProductEntity> products) {
         this.products = products;
+    }
+
+    public String getNameUnsigned() {
+        return nameUnsigned;
+    }
+
+    public void setNameUnsigned(String nameUnsigned) {
+        this.nameUnsigned = nameUnsigned;
     }
 }

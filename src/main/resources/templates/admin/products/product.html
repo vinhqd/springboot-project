@@ -72,14 +72,20 @@
 
                             <div class="card-body">
 
-                                <select id="limit" class="custom-select" style="margin-bottom: 16px; max-width: 100px">
-                                    <option value="2">2</option>
-                                    <option value="5">5</option>
-                                    <option selected value="10">10</option>
-                                    <option value="20">20</option>
-                                    <option value="50">50</option>
-                                    <option value="all">All</option>
-                                </select>
+                                <div id="bodyHeader" class="card-title w-100 d-flex justify-content-between mb-2">
+
+                                    <select id="limit" class="custom-select col-2">
+                                        <option value="2">2</option>
+                                        <option value="5">5</option>
+                                        <option selected value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                        <option value="all">All</option>
+                                    </select>
+
+                                    <input id="searchBox" class="form-control col-4" type="text" placeholder="Tìm kiếm">
+
+                                </div>
 
                                 <table id="table" class="table table-bordered table-striped">
                                     <thead>
@@ -148,6 +154,7 @@
         $(document).ready(function() {
             var $pagination = $('#pagination');
             let totalPage = [[${model.totalPage}]];
+            let url="";
 
             $pagination.twbsPagination({
                 totalPages: totalPage,
@@ -155,7 +162,7 @@
                 startPage: [[${model.currentPage}]],
                 onPageClick: function (e, currentPage) {
 
-                    let url = `${window.location.href}?page=${currentPage}&limit=${[[${model.limit}]]}`;
+                    url = `${window.location.pathname}?page=${currentPage}&limit=${[[${model.limit}]]}`;
                     $.ajax({
                         url: url,
                         dataType : "html",
@@ -169,7 +176,7 @@
 
             $("#limit").change(function () {
                 let limit = $(this).val();
-                let url = `${window.location.href}?page=${[[${model.currentPage}]]}&limit=${limit}`;
+                url = `${window.location.pathname}?page=${[[${model.currentPage}]]}&limit=${limit}`;
                 totalPage = Math.ceil([[${model.totalItem}]] / limit)
                 $.ajax({
                     url: url,
@@ -182,7 +189,7 @@
                             visiblePages: 5,
                             startPage: [[${model.currentPage}]],
                             onPageClick: function (e, currentPage) {
-                                url = `${window.location.href}?page=${currentPage}&limit=${limit}`;
+                                url = `${window.location.pathname}?page=${currentPage}&limit=${limit}`;
                                 $.ajax({
                                     url: url,
                                     dataType : "html",
@@ -200,7 +207,7 @@
             $('#btnDelete').on('click', function(e) {
                 let ids = [];
                 // Iterate over all checkboxes in the table
-                $('#table input[type="checkbox"]').each(function () {
+                $('#table tbody input[type="checkbox"]').each(function () {
                     if (this.checked) {
                         // Create a hidden element
                         ids.push(this.value);
@@ -220,7 +227,7 @@
                                     icon: "success",
                                 }).then((willSuccess) => {
                                     if (willSuccess) {
-                                        window.location.href = "/admin/category/delete?ids=" + ids;
+                                        window.location.href = "/admin/product/delete?ids=" + ids;
                                     }
                                 });
                             } else {
@@ -240,18 +247,28 @@
                 if(this.checked) {
                     $('#table tbody input[type="checkbox"]').each(function (index, e) {
                         if (!e.checked) {
-                            // Create a hidden element
-                            e.checked(true);
+                            $(e).prop("checked", true);
                         }
                     });
                 } else {
                     $('#table tbody input[type="checkbox"]').each(function (index, e) {
                         if (e.checked) {
-                            // Create a hidden element
-                            e.checked(false);
+                            $(e).prop("checked", false);
                         }
                     });
                 }
+            });
+
+            $('#bodyHeader #searchBox').on("change paste keyup", function () {
+               let key = $(this).val();
+               url += `&q=${key}`;
+               $.ajax({
+                   url: url,
+                   dataType : "html",
+                   success: function (data) {
+                       $('#table').html($('#table',data).html());
+                   }
+               })
             });
 
         });
