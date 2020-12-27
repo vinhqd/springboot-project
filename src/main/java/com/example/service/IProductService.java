@@ -9,6 +9,8 @@ public interface IProductService {
 
     List<ProductDTO> findAll(Pageable pageable);
 
+    List<ProductDTO> findByName(String name);
+
     long count();
 
     ProductDTO findOneById(long id);

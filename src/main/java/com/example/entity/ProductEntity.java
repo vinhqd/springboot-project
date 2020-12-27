@@ -91,4 +91,20 @@ public class ProductEntity extends BaseEntity {
     public void setBrand(BrandEntity brand) {
         this.brand = brand;
     }
+
+    public String getNameUnsigned() {
+        return nameUnsigned;
+    }
+
+    public void setNameUnsigned(String nameUnsigned) {
+        this.nameUnsigned = nameUnsigned;
+    }
+
+    public String getDescriptionUnsigned() {
+        return descriptionUnsigned;
+    }
+
+    public void setDescriptionUnsigned(String descriptionUnsigned) {
+        this.descriptionUnsigned = descriptionUnsigned;
+    }
 }

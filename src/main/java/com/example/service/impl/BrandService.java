@@ -5,6 +5,7 @@ import com.example.dto.BrandDTO;
 import com.example.entity.BrandEntity;
 import com.example.repository.BrandRepository;
 import com.example.service.IBrandService;
+import com.example.utils.VNCharacterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +39,9 @@ public class BrandService implements IBrandService {
 
     @Override
     public BrandDTO save(BrandDTO brandDTO) {
-        BrandEntity entity = brandRepository.save(converter.toEntity(brandDTO, BrandEntity.class));
-        return converter.toDTO(entity, BrandDTO.class);
+        BrandEntity entity = converter.toEntity(brandDTO, BrandEntity.class);
+        entity.setNameUnsigned(VNCharacterUtils.removeAccent(entity.getName()));
+        return converter.toDTO(brandRepository.save(entity), BrandDTO.class);
     }
 
     @Override

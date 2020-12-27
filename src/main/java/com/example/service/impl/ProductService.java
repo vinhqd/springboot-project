@@ -1,13 +1,13 @@
 package com.example.service.impl;
 
 import com.example.converter.ModelConverter;
-import com.example.converter.ProductConverter;
 import com.example.dto.ProductDTO;
 import com.example.entity.ProductEntity;
 import com.example.repository.BrandRepository;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
 import com.example.service.IProductService;
+import com.example.utils.VNCharacterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +41,12 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductDTO> findByName(String name) {
+        List<ProductEntity> entities = productRepository.findAllByName(VNCharacterUtils.removeAccent(name));
+        return entities.stream().map(item -> converter.toDTO(item, ProductDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
     public long count() {
         return productRepository.count();
     }
@@ -55,6 +61,7 @@ public class ProductService implements IProductService {
         ProductEntity entity = converter.toEntity(productDTO, ProductEntity.class);
         entity.setBrand(brandRepository.findOneByCode(productDTO.getBrandCode()).get());
         entity.setCategory(categoryRepository.findOneByCode(productDTO.getCategoryCode()).get());
+        entity.setNameUnsigned(VNCharacterUtils.removeAccent(productDTO.getName()));
         if (productDTO.getMultipartFile().getOriginalFilename() == null || !productDTO.getMultipartFile().getOriginalFilename().equals("")) {
             entity.setThumbnail(amazonClient.uploadFile(productDTO.getMultipartFile()));
         }

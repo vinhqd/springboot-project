@@ -110,7 +110,8 @@
                                             <td th:text="*{brandName}"></td>
                                             <td th:text="*{quantity}"></td>
                                             <td>
-                                                <button id="btnEdit" th:data-id="*{id}" class="btn btn-outline-info">Edit</button>
+                                                <button id="btnEdit" th:data-id="*{id}" class="btn btn-outline-success">Sửa</button>
+                                                <button id="btnDetail" th:data-id="*{id}" class="btn btn-outline-info">Chi tiết</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -235,7 +236,7 @@
                             }
                         });
                 } else {
-                    swal("Chưa chọn thể loại để xoá!")
+                    swal("Chưa chọn sản phẩm để xoá!")
                 }
             });
 
@@ -261,7 +262,7 @@
 
             $('#bodyHeader #searchBox').on("change paste keyup", function () {
                let key = $(this).val();
-               url += `&q=${key}`;
+               url = `${window.location.pathname}?page=${[[${model.currentPage}]]}&limit=${[[${model.limit}]]}&q=${key}`;
                $.ajax({
                    url: url,
                    dataType : "html",

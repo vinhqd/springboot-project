@@ -15,6 +15,15 @@ public abstract class AbstractDTO<T> {
     private int totalPage;
     private int limit;
     private int currentPage;
+    private String keySearch;
+
+    public String getKeySearch() {
+        return keySearch;
+    }
+
+    public void setKeySearch(String keySearch) {
+        this.keySearch = keySearch;
+    }
 
     public long getTotalItem() {
         return totalItem;

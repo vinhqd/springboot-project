@@ -34,7 +34,11 @@ public class ProductController {
     public String productPage(Model model, @RequestParam(required = false) Map<String, String> params) {
         ProductDTO result = (ProductDTO) PageableUtil.pageable(new ProductDTO(), params, productService.count());
         Pageable pageable = PageRequest.of(result.getCurrentPage() - 1, result.getLimit());
-        result.setResults(productService.findAll(pageable));
+        if (params.get("q") == null || params.get("q").equals("")) {
+            result.setResults(productService.findAll(pageable));
+        } else {
+            result.setResults(productService.findByName(params.get("q").toLowerCase()));
+        }
         model.addAttribute("model", result);
         return "/admin/products/product";
     }

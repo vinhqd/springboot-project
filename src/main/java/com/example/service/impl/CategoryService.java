@@ -2,9 +2,11 @@ package com.example.service.impl;
 
 import com.example.converter.ModelConverter;
 import com.example.dto.CategoryDTO;
+import com.example.entity.BrandEntity;
 import com.example.entity.CategoryEntity;
 import com.example.repository.CategoryRepository;
 import com.example.service.ICategoryService;
+import com.example.utils.VNCharacterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +42,9 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public CategoryDTO save(CategoryDTO categoryDTO) {
-        CategoryEntity entity = categoryRepository.save(converter.toEntity(categoryDTO, CategoryEntity.class));
-        return converter.toDTO(entity, CategoryDTO.class);
+        CategoryEntity entity = converter.toEntity(categoryDTO, CategoryEntity.class);
+        entity.setNameUnsigned(VNCharacterUtils.removeAccent(entity.getName()));
+        return converter.toDTO(categoryRepository.save(entity), CategoryDTO.class);
     }
 
     @Override
