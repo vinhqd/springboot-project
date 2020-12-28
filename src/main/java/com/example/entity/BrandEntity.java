@@ -14,6 +14,9 @@ public class BrandEntity extends BaseEntity {
     @Column
     private String name;
 
+    @Column
+    private String image;
+
     @Column(name = "nameunsigned")
     private String nameUnsigned;
 
@@ -53,5 +56,13 @@ public class BrandEntity extends BaseEntity {
 
     public void setNameUnsigned(String nameUnsigned) {
         this.nameUnsigned = nameUnsigned;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

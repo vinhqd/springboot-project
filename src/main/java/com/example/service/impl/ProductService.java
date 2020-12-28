@@ -11,11 +11,13 @@ import com.example.utils.VNCharacterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProductService implements IProductService {
 
     @Autowired
@@ -59,6 +61,10 @@ public class ProductService implements IProductService {
     @Override
     public ProductDTO save(ProductDTO productDTO) {
         ProductEntity entity = converter.toEntity(productDTO, ProductEntity.class);
+        if (productDTO.getId() != null) {
+            ProductEntity oldEntity = productRepository.findById(productDTO.getId()).get();
+            entity = converter.toEntity(entity, oldEntity);
+        }
         entity.setBrand(brandRepository.findOneByCode(productDTO.getBrandCode()).get());
         entity.setCategory(categoryRepository.findOneByCode(productDTO.getCategoryCode()).get());
         entity.setNameUnsigned(VNCharacterUtils.removeAccent(productDTO.getName()));

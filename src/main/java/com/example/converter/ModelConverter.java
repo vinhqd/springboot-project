@@ -17,6 +17,12 @@ public class ModelConverter {
 
     public <T, K> T toEntity(K dto, Class<T> entityClass) {
         T entity = mapper.map(dto, entityClass);
+        mapper.map(dto, dto);
+        return entity;
+    }
+
+    public <T, K> T toEntity(K dto, T entity) {
+        mapper.map(dto, entity);
         return entity;
     }
 

@@ -1,9 +1,16 @@
 package com.example.entity;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
     @Id
@@ -11,15 +18,19 @@ public abstract class BaseEntity {
     private Long id;
 
     @Column(name = "createddate")
+    @CreatedDate
     private Date createdDate;
 
     @Column(name = "createdby")
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "modifieddate")
+    @LastModifiedDate
     private Date modifiedDate;
 
     @Column(name = "modifiedby")
+    @LastModifiedBy
     private String modifiedBy;
 
     public Long getId() {
@@ -42,23 +53,4 @@ public abstract class BaseEntity {
         return modifiedBy;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
 }

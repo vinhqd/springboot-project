@@ -4,13 +4,16 @@ import com.example.converter.ModelConverter;
 import com.example.dto.CategoryDTO;
 import com.example.entity.BrandEntity;
 import com.example.entity.CategoryEntity;
+import com.example.entity.ProductEntity;
 import com.example.repository.CategoryRepository;
+import com.example.repository.ProductRepository;
 import com.example.service.ICategoryService;
 import com.example.utils.VNCharacterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +24,9 @@ public class CategoryService implements ICategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private ModelConverter converter;
@@ -43,14 +49,19 @@ public class CategoryService implements ICategoryService {
     @Override
     public CategoryDTO save(CategoryDTO categoryDTO) {
         CategoryEntity entity = converter.toEntity(categoryDTO, CategoryEntity.class);
+        if (categoryDTO.getId() != null) {
+            CategoryEntity oldEntity = categoryRepository.findById(categoryDTO.getId()).get();
+            entity = converter.toEntity(entity, oldEntity);
+        }
         entity.setNameUnsigned(VNCharacterUtils.removeAccent(entity.getName()));
         return converter.toDTO(categoryRepository.save(entity), CategoryDTO.class);
     }
 
     @Override
     public void delete(long[] ids) {
-        for (long id: ids) {
-            categoryRepository.deleteById(id);
-        }
+        Arrays.stream(ids).forEach(item -> {
+            productRepository.deleteAllByCategory(categoryRepository.getOne(item));
+            categoryRepository.deleteById(item);
+        });
     }
 }
