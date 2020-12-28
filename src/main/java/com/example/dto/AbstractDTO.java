@@ -16,6 +16,24 @@ public abstract class AbstractDTO<T> {
     private int limit;
     private int currentPage;
     private String keySearch;
+    private String columnName;
+    private String sortType;
+
+    public String getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(String sortType) {
+        this.sortType = sortType;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
 
     public String getKeySearch() {
         return keySearch;

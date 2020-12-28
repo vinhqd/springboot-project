@@ -1,0 +1,43 @@
+.table-sortable > thead > tr > th {
+    cursor: pointer;
+    position: relative;
+}
+
+.table-sortable > thead > tr > th:not(:nth-child(1)):after,
+.table-sortable > thead > tr > th:not(:nth-child(1)):after,
+.table-sortable > thead > tr > th:not(:nth-child(1)):after {
+    content: ' ';
+    position: absolute;
+    height: 0;
+    width: 0;
+    right: 10px;
+    top: 16px;
+}
+
+.table-sortable > thead > tr > th:not(:nth-child(1)):not(:last-child):after {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #ccc;
+    border-bottom: 0px solid transparent;
+}
+
+.table-sortable > thead > tr > th:not(:nth-child(1)):not(:last-child):hover:after {
+    border-top: 5px solid #888;
+}
+
+.table-sortable > thead > tr > th:not(:nth-child(1)):not(:last-child).asc:after {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 0px solid transparent;
+    border-bottom: 5px solid #333;
+}
+.table-sortable > thead > tr > th:not(:nth-child(1)):not(:last-child).asc:hover:after {
+    border-bottom: 5px solid #888;
+}
+
+.table-sortable > thead > tr > th:not(:nth-child(1)):not(:last-child).desc:after {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #333;
+    border-bottom: 5px solid transparent;
+}

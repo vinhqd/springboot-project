@@ -5,9 +5,11 @@ import com.example.service.IBrandService;
 import com.example.service.ICategoryService;
 import com.example.service.IProductService;
 import com.example.utils.PageableUtil;
+import com.example.utils.SortUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +35,8 @@ public class ProductController {
     @GetMapping
     public String productPage(Model model, @RequestParam(required = false) Map<String, String> params) {
         ProductDTO result = (ProductDTO) PageableUtil.pageable(new ProductDTO(), params, productService.count());
-        Pageable pageable = PageRequest.of(result.getCurrentPage() - 1, result.getLimit());
+        Sort sort = SortUtil.sortUtil(params, result);
+        Pageable pageable = PageRequest.of(result.getCurrentPage() - 1, result.getLimit(), sort);
         if (params.get("q") == null || params.get("q").equals("")) {
             result.setResults(productService.findAll(pageable));
         } else {

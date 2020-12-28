@@ -11,11 +11,8 @@
                                                )}">
 <head>
     <title>Sản phẩm</title>
-    <th:block id="home-static-resources">
-        <!-- DataTables -->
-        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
-        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
-        <link rel="stylesheet" th:href="@{/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+    <th:block id="header-static-resource">
+        <link rel="stylesheet" th:href="@{/admin/tablesortable.css}">
     </th:block>
 </head>
 <body>
@@ -87,17 +84,41 @@
 
                                 </div>
 
-                                <table id="table" class="table table-bordered table-striped">
+                                <table id="table" class="table table-bordered table-striped table-sortable">
                                     <thead>
-                                    <tr>
+                                    <tr th:switch="${model.columnName}">
                                         <th scope="col">
                                             <input id="select-all" type="checkbox">
                                         </th>
-                                        <th scope="col">Tên sản phẩm</th>
-                                        <th scope="col">Tển thể loại</th>
-                                        <th scope="col">Tên nhãn hiệu</th>
-                                        <th scope="col">Số lượng</th>
-                                        <th>#</th>
+                                        <th:block th:case="name" >
+                                            <th data-column-name="name" th:class="${model.sortType}" scope="col">Tên sản phẩm</th>
+                                            <th data-column-name="category.name" scope="col">Tển thể loại</th>
+                                            <th data-column-name="brand.name" scope="col">Tên nhãn hiệu</th>
+                                            <th scope="col">Số lượng</th>
+                                            <th>#</th>
+                                        </th:block>
+                                        <th:block th:case="category.name" >
+                                            <th data-column-name="name" scope="col">Tên sản phẩm</th>
+                                            <th data-column-name="category.name" th:class="${model.sortType}" scope="col">Tển thể loại</th>
+                                            <th data-column-name="brand.name" scope="col">Tên nhãn hiệu</th>
+                                            <th scope="col">Số lượng</th>
+                                            <th>#</th>
+                                        </th:block>
+                                        <th:block th:case="brand.name" >
+                                            <th data-column-name="name" scope="col">Tên sản phẩm</th>
+                                            <th data-column-name="category.name" scope="col">Tển thể loại</th>
+                                            <th data-column-name="brand.name" th:class="${model.sortType}" scope="col">Tên nhãn hiệu</th>
+                                            <th scope="col">Số lượng</th>
+                                            <th>#</th>
+                                        </th:block>
+                                        <th:block th:case="*" >
+                                            <th data-column-name="name" th:class="asc" scope="col">Tên sản phẩm</th>
+                                            <th data-column-name="category.name" scope="col">Tển thể loại</th>
+                                            <th data-column-name="brand.name" scope="col">Tên nhãn hiệu</th>
+                                            <th scope="col">Số lượng</th>
+                                            <th>#</th>
+                                        </th:block>
+
                                     </tr>
                                     </thead>
                                     <tbody th:each="product: ${model.results}">
@@ -152,6 +173,7 @@
     <!-- Page specific script -->
     <script>
         $("#product").addClass("menu-open");
+        $("#list-product").addClass("active");
         $(document).ready(function() {
             var $pagination = $('#pagination');
             let totalPage = [[${model.totalPage}]];
@@ -274,6 +296,30 @@
                        $('#table').html($('#table',data).html());
                    }
                })
+            });
+
+            $('#table').on("click", "thead tr th", function () {
+                let sort = $(this).attr("class");
+                $('#table thead tr th').each(function (index, e) {
+                    $(e).removeClass("asc");
+                    $(e).removeClass("desc");
+                });
+                if (sort == "asc") {
+                    $(this).attr("class", "desc");
+                } else {
+                    $(this).attr("class", "asc");
+                }
+                sort = $(this).attr("class");
+                let columnName = $(this).data("column-name");
+                url = `${window.location.pathname}?page=${[[${model.currentPage}]]}&limit=${[[${model.limit}]]}&sort=${sort}&column=${columnName}`;
+                $.ajax({
+                    url: url,
+                    dataType : "html",
+                    success: function (data){
+                        $('#table').html($('#table',data).html());
+                        // similar to $(data).find('#showresults')
+                    }
+                })
             });
 
         });
