@@ -72,6 +72,13 @@
                                         <label for="code">Mã thương hiệu</label>
                                         <input type="text" class="form-control" id="code" placeholder="Mã thể loại" th:field="*{code}">
                                     </div>
+                                    <div class="form-group col-6">
+                                        <div class="form-group">
+                                            <label for="imgFile">Ảnh</label>
+                                            <input type="file" class="form-control-file" id="imgFile" th:field="*{fileName}">
+                                            <input type="hidden" th:field="*{base64}">
+                                        </div>
+                                    </div>
                                     <button th:if="*{id == null}" type="submit" class="btn btn-primary">Thêm mới</button>
                                     <button th:if="*{id != null}" type="submit" class="btn btn-primary">Sửa</button>
                                     <input type="hidden" th:field="*{id}">
@@ -117,7 +124,16 @@
     <script>
         $("#brand").addClass("menu-open");
         $(document).ready(function() {
-
+            $("#imgFile").change(function() {
+               let files = $(this)[0].files[0];
+               if (files) {
+                   var reader = new FileReader();
+                   reader.onload = function(e) {
+                       $("#base64").val(e.target.result);
+                   };
+                   reader.readAsDataURL(files);
+               }
+            });
         });
     </script>
 </th:block>

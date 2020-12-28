@@ -6,6 +6,7 @@ import com.example.entity.BrandEntity;
 import com.example.repository.BrandRepository;
 import com.example.repository.ProductRepository;
 import com.example.service.IBrandService;
+import com.example.utils.FileUtil;
 import com.example.utils.VNCharacterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
