@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import com.example.converter.ModelConverter;
 import com.example.dto.ProductDTO;
+import com.example.entity.BrandEntity;
 import com.example.entity.ProductEntity;
 import com.example.repository.BrandRepository;
 import com.example.repository.CategoryRepository;
@@ -61,15 +62,15 @@ public class ProductService implements IProductService {
     @Override
     public ProductDTO save(ProductDTO productDTO) {
         ProductEntity entity = converter.toEntity(productDTO, ProductEntity.class);
-        if (productDTO.getId() != null) {
-            ProductEntity oldEntity = productRepository.findById(productDTO.getId()).get();
-            entity = converter.toEntity(entity, oldEntity);
-        }
         entity.setBrand(brandRepository.findOneByCode(productDTO.getBrandCode()).get());
         entity.setCategory(categoryRepository.findOneByCode(productDTO.getCategoryCode()).get());
         entity.setNameUnsigned(VNCharacterUtils.removeAccent(productDTO.getName()));
         if (productDTO.getMultipartFile().getOriginalFilename() == null || !productDTO.getMultipartFile().getOriginalFilename().equals("")) {
             entity.setThumbnail(amazonClient.uploadFile(productDTO.getMultipartFile()));
+        }
+        if (productDTO.getId() != null) {
+            ProductEntity oldEntity = productRepository.findById(productDTO.getId()).get();
+            entity = converter.toEntity(entity, oldEntity);
         }
         return converter.toDTO(productRepository.save(entity), ProductDTO.class);
     }

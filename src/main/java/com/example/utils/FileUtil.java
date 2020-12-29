@@ -13,7 +13,7 @@ import java.util.Date;
 @Component
 public class FileUtil {
 
-    @Value("{uploads.path}")
+    @Value("${uploads.path}")
     private String path;
 
     public File convertMultiPartToFile(MultipartFile file) throws IOException {
